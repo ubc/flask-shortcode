@@ -1,0 +1,274 @@
+#flask-shell{
+	display: block!important;
+}
+#bubbles{
+	position: relative;
+	height: 550px;
+	width: 100%;
+}
+.filter-wrap{
+	margin: 0 auto;
+}
+/* commitmets nav on the home page */
+#commitments{
+	margin: 40px 0 0;
+	list-style: none;
+	position: relative;
+	z-index: 2;
+	visibility: visible!important;
+}
+
+#commitments li{
+	float: left;
+	width: 11%;
+	text-align: center;
+	vertical-align: bottom;
+	padding: 0;
+	margin: 0;
+	line-height: 18px;
+}
+#commitments li .hide-away:hover,
+#commitments li a{
+	text-decoration: none;
+	font-size: 10px;
+	line-height: 1.4em;
+	display: block;
+	margin: 0;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+	padding-bottom: 40px;
+	background:  url( ../img/commitment-nav.png) no-repeat 50% 40px;
+	height:38px;
+}
+#commitments .hide-away{
+	cursor: default;
+	transition: opacity 200ms;
+	-moz-transition: opacity 200ms; /* Firefox 4 */
+	-webkit-transition: opacity 200ms; /* Safari and Chrome */
+	-o-transition: opacity 200ms; /* Opera */
+	opacity: 0.6;
+}
+#commitments .still-show{
+	opacity: 1;
+	background-position: 50% -260px;
+	cursor: pointer;
+}
+
+#commitments li .still-show:hover,
+#commitments li .locked{
+	font-size:11px;
+	line-height: 19px;
+	
+}
+#commitments li .still-show:hover{
+	background-position: 50% -412px;
+
+}
+#commitments li .locked,
+#commitments li .locked:hover{
+	background-position: 50% -110px;
+}
+
+#commitments li .main-commitment.hide-away,
+#commitments li .main-commitment{
+	font-size: 14px;
+}
+#commitments li .main-commitment.still-show,
+#commitments li .main-commitment.locked{
+	font-size:16px;
+}
+@media (max-width: 979px) { 
+	#commitments li{
+		margin:0 -3%;
+    	width: 17%;
+	}
+	#commitments li:nth-child(odd){
+		margin-top: -38px;
+	}
+	
+}
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) { 
+	/* we not have this layout any more… 
+	Mobile layout now in effect
+	*/
+	
+	
+}
+/* from home */
+#canvas-wrap{
+	position: relative;
+}
+#canvas{
+	z-index: 1;
+
+}
+.icon-hero-story{
+	position: absolute;
+	float: left;
+	z-index: 1000;
+	margin-left: 0;
+}
+.icon-hero-story img{
+
+	width: 100%;	
+}
+.big-circle,
+.small-circle{
+	border-radius: 50%;
+	display: block;
+	position: absolute;
+	bottom: 0;
+	background: rgba(0,0,0,0);
+	margin-left: 0;
+	text-decoration: none;
+}
+/* small circle */
+.icon-hero-size-small .small-circle{
+	width:68px;
+	height:68px;
+}
+.icon-hero-size-medium .small-circle{
+	width:75.2px;
+	height:75.2px;
+}
+.icon-hero-size-large .small-circle{
+	width:86.4px;
+	height:86.4px;
+}
+.circle-position-right .small-circle{
+	left: 0;
+}
+.circle-position-left .small-circle{
+	right:0;
+}
+/* big circle */
+.big-circle{
+	top:0;
+}
+.circle-position-right .big-circle{
+	right: 0;
+}
+.circle-position-left .big-circle{
+	left:0;
+}
+
+.icon-hero-size-small .big-circle{
+	width:94.4px;
+	height:94.4px;
+}
+
+.icon-hero-size-medium .big-circle{
+	width:104px;
+	height:104px;
+}
+
+.icon-hero-size-large .big-circle{
+	width:118.4px;
+	height:118.4px;
+}
+
+
+.icon-hero-story img{
+	width: 100%;
+}
+.bubble{
+	z-index: 1;
+	color: #AAA;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	opacity: 1;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%; /* future proofing */
+	-khtml-border-radius: 50%; /* for old Konqueror browsers */
+	background: #743A80 url(../img/icon-story-hover.png) no-repeat 0 0;
+   cursor: pointer;
+}
+.bubble:hover{
+	-webkit-transition: opacity 0.2s, top 0.2s;
+	-webkit-transition-delay: 0;
+	-moz-transition: opacity 0.2s, top 0.2s;
+	-moz-transition-delay: 0;
+	-o-transition: opacity 0.2s, top 0.2s;
+	-o-transition-delay: 0;
+	opacity: 1;
+	background: #743A80 url(../img/icon-story-hover.png) no-repeat 0 -45px;
+}
+
+.bubble-link{
+	display: block;
+	color:#FFF;
+	margin:-40px 0  0 -210px;
+	width: 460px;
+	text-decoration: none;
+	text-align: center;
+	opacity: 1;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-family: Myriad, sans-serif;
+}
+
+.bubble-bright{
+	 opacity: 1!important;
+	 background: #743A80 url(../img/icon-story-hover.png) no-repeat 0 0;
+}
+.bubble-bright .bubble-link{
+	opacity:1;
+}
+.bubble:hover .bubble-link{
+	opacity: 1;
+}
+.bubble-link.show{
+	display: block;
+	clear: both;
+	position: relative;
+}
+
+.bubble-link-shell{
+	background: rgb(44,65,124);
+	background: rgba(44,65,124, 0.6);
+	padding:5px 10px;
+	margin-top: -11px;
+    -moz-box-shadow:inset 0px -1px 14px rgba(0,0,0,0.2);
+    -webkit-box-shadow:inset 0px -1px 14px rgba(0,0,0,0.2);
+    box-shadow:inset 0px -1px 14px rgba(0,0,0,0.2);
+}
+.bubble-link-shell.show{
+	margin-top: -94px;
+}
+.bubble-link,
+.bubble-link:hover,
+.bubble-link-shell:hover{
+	color: #FFF;
+}
+.bubble-link-shell:before { 
+	content:""; 
+	position: absolute; 
+	right: 6px; 
+	top: -15px; 
+	width: 0; height: 0; 
+	border-left: 10px solid transparent; 
+	border-right: 10px solid transparent; 
+	border-top: 12px solid  rgba(44,65,124, 0.4); 
+}
+.bubble-link-excerpt{
+	margin-top: 0;
+	display: none;
+	height: 0;
+	background: rgba(44,65,124, 0.6);
+	font-weight: normal;
+	font-size: 14px;
+	text-transform: none;
+	padding: 0px 15px;
+	text-align: left;
+
+}
+.bubble-link-excerpt.show{
+	display: block;
+}
+.bubble-bright .bubble-link,
+.bubble:hover .bubble-link{
+	
+}
+

@@ -51,6 +51,7 @@ if (document.all && !window.setInterval.isPolyfill) {
  *
  */
  (function (document, window, $ ){
+  var isMSIE = /*@cc_on!@*/0; // check for IE
     // Function-level strict mode syntax
   'use strict';
     var Flask = {
@@ -230,16 +231,25 @@ if (document.all && !window.setInterval.isPolyfill) {
                 hitResult = Flask.hero_stories.hitTest( event.point );
             break;
             case 'bubble':
+            	
+            	if( isMSIE ){
+            	var add_point = new paper.Point(0, 27);
+            	event.point = event.point.add(add_point);
+                }
                 hitResult = Flask.bubbles.hitTest( event.point );
             break;
         }
-        console.log(hitResult.item);
-        if ( hitResult &&  hitResult.item && ( 'Path' == hitResult.item.type  || 'hero' != what ) ) {            if(hitResult.item.parent.kind == 'hero-story'){
+        
+        if ( hitResult &&  hitResult.item && ( 'Path' == hitResult.item.type  || 'hero' != what ) ) {            
+        	
+        	if( hitResult.item.parent.kind == 'hero-story' ) {
                 hitResult.item = hitResult.item.parent;
-                }
+            }
+            
             hitResult.item.opacity = 1;
             
             // Flask.resize_circle( hitResult.item.parent,  Flask.radius_max );
+            
             if(!Flask.link_added)
                 Flask.add_link(  hitResult.item,  hitResult.item.num);
             // stop the bubbles from moving 
@@ -363,7 +373,25 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     add_hover_over_event: function( i ,el) {
 
-        jQuery(el).hover(  
+        jQuery(el).on({
+        				mouseenter: function() 
+						{
+						    //stuff to do on mouseover
+						    if( Flask.hero_hover_off_timer[i] ){
+						        clearTimeout( Flask.hero_hover_off_timer[i] );
+						        Flask.hero_hover_off_timer[i] = null;
+						    } else {
+						        Flask.hover_over_hero_story(    Flask.hero_stories.children[i], i, this ); 
+						    }
+						
+						},
+						mouseleave: function()
+						{
+						    //stuff to do on mouseleave
+						    Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
+						}
+						});
+/*
             function() { 
                 if( Flask.hero_hover_off_timer[i] ){
                     clearTimeout( Flask.hero_hover_off_timer[i] );
@@ -377,6 +405,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
             }
         );
+        */
         
     },
     resize_circle: function( item,  width, height ) {
