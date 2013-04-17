@@ -89,6 +89,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         draw_line_segment : 0,
         fade_animation_state: false,
         lock_links        : false,
+        watch_moving	  : true,
         small_circle_vs_big_circle: 1.377,
         locations: {},
         delay: false,
@@ -96,6 +97,12 @@ if (document.all && !window.setInterval.isPolyfill) {
         debug: false,
        
     init: function() {
+    
+    	$('#full-report').hover(function() {
+    		Flask.watch_moving = false;
+    	}, function(){
+    		Flask.watch_moving = true;
+    	})
         Flask.debug = false;
         Flask.num_of_bubbles     = 30;
         Flask.num_of_walk_paths  = 10;
@@ -218,10 +225,14 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     onMouseMove: function( event ){
         
+       if( Flask.watch_moving ) {
+       
         Flask.bubbles.moving = true;
         Flask.remove_links();        
         Flask.hit_test( event, 'hero');
         Flask.hit_test( event, 'bubble');
+        
+       }
     },
     hit_test: function( event, what ) {
     	
