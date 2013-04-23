@@ -100,8 +100,10 @@ if (document.all && !window.setInterval.isPolyfill) {
     
     	$('#full-report').hover(function() {
     		Flask.watch_moving = false;
+    		
     	}, function(){
     		Flask.watch_moving = true;
+    		
     	})
         Flask.debug = false;
         Flask.num_of_bubbles     = 30;
