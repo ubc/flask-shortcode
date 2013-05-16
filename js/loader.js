@@ -1,5 +1,5 @@
 Modernizr.load({
   test: Modernizr.canvas,
-  yep : [ flask_plugin_url+'js/paper.js',flask_plugin_url+'js/points.js', flask_plugin_url+'js/flask.js', flask_plugin_url+'css/flask.css' ],
-  nope: 'geo-polyfill.js'
+  yep : [ flask_plugin_url+'/paper.min.js',flask_plugin_url+'/flask.js' ],
+  nope: flask_plugin_url+'/no-canvas.js'
 });

@@ -1,0 +1,1 @@
+console.log('no canvas redirect to timeline page');

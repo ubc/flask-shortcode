@@ -1,3 +1,60 @@
+var bubble_points = [	
+{x:342.5,y:393},
+{x:656.5,y:256},
+{x:985.5,y:196},
+{x:1065.5,y:64},
+{x:117.5,y:227},
+{x:157.5,y:57},
+{x:613,y:55},
+{x:249.5,y:110},
+{x:238.5,y:405},
+{x:179,y:229},
+{x:293.5,y:349},
+{x:343.5,y:147},
+{x:309.5,y:52},
+{x:399.5,y:234},
+{x:379.5,y:330},
+{x:395.5,y:383},
+{x:472.5,y:367},
+{x:454.5,y:287},
+{x:263.5,y:195},
+{x:562.5,y:80},
+{x:804.5,y:331},
+{x:578.5,y:198},
+{x:724.5,y:318},
+{x:539.5,y:397},
+{x:490.5,y:190.5}, 
+{x:753.5,y:281},
+{x:743.5,y:346},
+{x:1034.5,y:238},
+{x:847.5,y:380},
+{x:381.5,y:89},
+{x:888.5,y:156},
+{x:874.5,y:97},
+{x:816.5,y:78},
+{x:930.5,y:83},
+{x:1075.5,y:64},
+{x:1109.5,y:132},
+{x:1110.5,y:203},
+{x:1023.5,y:227},
+{x:1088.5,y:257},
+{x:1102.5,y:316},
+{x:913.5,y:365}
+];
+
+var hero_stories_points = [
+	{x:465.5,y:126, img:'right', size: 34, move_by: 23},
+	{x:125.5,y:133,  img:'left', size: 34, move_by: 23},
+	{x:145.5,y:340, img:'left', size:38, move_by: 18},
+	{x:307.5,y:263, img:'right', size:38, move_by: 18},
+	
+	{x:712.5,y:137, img:'right', size: 43, move_by: 8.5},
+	{x:595.5,y:318, img:'left', size:38, move_by: 18},
+	{x:877.5,y:251, img:'left', size: 43, move_by: 8.5},
+	{x:1007.5,y:125, img:'left', size: 34, move_by: 23},
+	{x:994.5,y:348, img:'right', size:38, move_by: 18}
+];
+
 /*\
 |*|
 |*|  IE-specific polyfill which enables the passage of arbitrary arguments to the
@@ -51,9 +108,10 @@ if (document.all && !window.setInterval.isPolyfill) {
  *
  */
  (function (document, window, $ ){
-  var isMSIE = /*@cc_on!@*/0; // check for IE
+ 	'use strict';
+  	var isMSIE = /*@cc_on!@*/0; // check for IE
     // Function-level strict mode syntax
-  'use strict';
+   
     var Flask = {
         canvas: $("#canvas"),
         canvas_wrap       : $('#canvas-wrap'),
@@ -95,6 +153,8 @@ if (document.all && !window.setInterval.isPolyfill) {
         delay: false,
         hero_hover_off_timer: [],
         debug: false,
+        commitment_cache: {},
+        hover_check: false,
        
     init: function() {
     
@@ -131,7 +191,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         paper.view.onResize = Flask.runResize;
         paper.view.draw();
         paper.view.viewSize = [ Flask.canvas_wrap.width(),450];
-        
+       
     },
     bindUIEvents: function() {
     
@@ -139,20 +199,49 @@ if (document.all && !window.setInterval.isPolyfill) {
                                  function() { Flask.off_commitment_over(this); } );
         Flask.commitments.click( function(e) { e.preventDefault(); Flask.on_commitment_click(this); } );
         
+        
+        
+         $('#filter-1').on('click', 'a', function(event) {
+        	
+        	var el = $(this);
+        	var item = el.data('slug');
+        	var filter = el.data('taxonomy');
+        	
+        	if( filter ){
+        		switch( item ) {
+        			case 'okanagan-campus':
+        				
+        				$('#filter-1 > .btn').html('Okanagan Campus <span class="caret"></span>');
+        				filter = 'filter_1';
+        				
+        			break;
+        			
+        			case 'vancouver-campus':
+        				$('#filter-1 > .btn').html('Vancouver Campus <span class="caret"></span>');
+        				filter = 'filter_1';
+        			break;
+        		
+        		}
+        		
+        		Flask.filter_bubbles( filter, item );
+        	} else {
+        		$('#filter-1 > .btn').html('Campus <span class="caret"></span>');
+        		Flask.show_all_bubbles();
+        	}
+        	
+        	event.preventDefault();
+        	
+        });
     },
     paint: function() {
 
-        var canvas_el = jQuery('#canvas');
+        var canvas_el = $('#canvas');
         canvas_el.attr('width', Flask.canvas_wrap.width());
        
         
         // Setup directly from canvas id:
         paper.setup( 'canvas' );
 
-       
-        // make sure that the canvas is the full width of the content
-        
-        //console.log(view.viewSize);
         // lets have a place to store some bubbles
         Flask.bubbles = new paper.Group();
         Flask.hero_stories = new paper.Group();
@@ -189,51 +278,22 @@ if (document.all && !window.setInterval.isPolyfill) {
     runResize: function (event) {
         paper.view.size.width = Flask.canvas_wrap.width();
         // view.viewSize = [ Flask.canvas_wrap.width(),450];
-        /*
-        
-         console.log(  );
-        console.log(Flask.canvas_wrap.width());
-        
-        
-        
-        Flask.bubbles.remove();
-        Flask.hero_stories.remove();
-        Flask.hero_stories_hitarea.remove();
-        // lets have a place to store some bubbles
-        Flask.bubbles = new paper.Group();
-        Flask.hero_stories = new paper.Group();
-        Flask.hero_stories_hitarea = new paper.Group();
-        
-        Flask.lines_group.remove();
-        Flask.all_lines.remove();
-
-        Flask.lines_group = new paper.Group();
-        Flask.all_lines   = new paper.Group();
-
-        Flask.add_elements( bubble_points, 'bubble' ); // lets make some bubbles
-        Flask.add_elements( hero_stories_points, 'hero-story' );
-        Flask.add_events();
-
-        Flask.opacity_group = new paper.Group(Flask.bubbles);
-        Flask.opacity_group.addChild( Flask.hero_stories );
-        */
     },
     onClick: function (event) {
         Flask.remove_links();
-        if(Flask.debug){
-            console.log( '{x:'+event.point.x+',y:'+event.point.y+'},' );
-        }
+        //if(Flask.debug){
+           // console.log( '{x:'+event.point.x+',y:'+event.point.y+'},' );
+        //}
         
     },
     onMouseMove: function( event ){
-        
+       
        if( Flask.watch_moving ) {
        
-        Flask.bubbles.moving = true;
-        Flask.remove_links();        
-        Flask.hit_test( event, 'hero');
-        Flask.hit_test( event, 'bubble');
-        
+	        Flask.bubbles.moving = true;
+	        Flask.remove_links();
+	        Flask.hit_test( event, 'bubble');      
+	        Flask.hit_test( event, 'hero');
        }
     },
     hit_test: function( event, what ) {
@@ -263,12 +323,13 @@ if (document.all && !window.setInterval.isPolyfill) {
             
             // Flask.resize_circle( hitResult.item.parent,  Flask.radius_max );
             
-            if(!Flask.link_added)
+            if(!Flask.link_added && hitResult.item.visible)
                 Flask.add_link(  hitResult.item,  hitResult.item.num);
             // stop the bubbles from moving 
             Flask.bubbles.moving = false;
         }
     },
+    
     create_walk_paths: function(count){
         var path_lenght = 10;
 
@@ -301,10 +362,10 @@ if (document.all && !window.setInterval.isPolyfill) {
     	
         return x * (paper.view.size.width/1170);
     },
-    add_elements: function( points, what){
+    add_elements: function( points, what ){
         var count = 0;
         if( 'bubble' == what ) {
-            count = loop_json.length;
+            count = loop_json.story.length;
         } else {
             count = points.length;
         }
@@ -345,6 +406,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                     img.position =  position;
 
                 var circle_position = Flask.get_circle_position( position , hero_stories_points[num], img, 'bottom', 0.8 );
+               
                 var circle =  new paper.Path.Circle( circle_position, hero_stories_points[num].size );
                     circle.fillColor = 'white';
                     circle.opacity = 0;
@@ -374,6 +436,53 @@ if (document.all && !window.setInterval.isPolyfill) {
             
         return icon;
     },
+    filter_bubbles: function( filter, item ){
+ 		Flask.show_all_bubbles( false );
+ 		
+ 	   	
+    	if( 'filter_1' == filter ){
+    	
+     		// loop though the stories
+     		var loop_size = loop_json.story.length;
+			for( var i=0; i < loop_size; i++ ) {
+				
+				if( loop_json.story[i].filter_1 ){
+					for( var j = 0; j <loop_json.story[i].filter_1.length; j++ ) {
+						
+						if(  typeof loop_json.story[i].filter_1[j] != "undefined" && loop_json.story[i].filter_1[j].slug == item ) {
+							Flask.bubbles.children[i].visible = true;
+						}
+					} // end of for loop
+				}
+			} // end of for loop
+			
+			// loop though the hero stories
+			var hero_size = loop_json.hero.length;
+			for( var k=0; k < hero_size; k++ ) {
+				if( loop_json.hero[k].filter_1 ){
+					for( var l = 0; l <loop_json.hero[k].filter_1.length; l++ ) {
+						if(  typeof loop_json.hero[k].filter_1[l] != "undefined" && loop_json.hero[k].filter_1[l].slug == item ) {
+							Flask.hero_stories.children[k].visible = true;
+						}
+					
+					} // end for loop l	
+				}
+			} // end for look k	
+ 		}    
+    },
+    show_all_bubbles: function( show ) {
+    
+    	show = typeof show !== 'undefined' ? show : true;
+    	var count = loop_json.story.length;
+    	
+    	for( var i=0; i < count; i++ ) {
+    		Flask.bubbles.children[i].visible = show;
+    	}
+    	count = loop_json.hero.length;
+    	for( var i=0; i < count; i++ ) {
+    		Flask.hero_stories.children[i].visible = show;
+    	}    
+    },
     add_events: function( ) {
         
         Flask.hero_stories_divs.find('.small-circle').each( function( i ) {
@@ -386,40 +495,24 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     add_hover_over_event: function( i ,el) {
 
-        jQuery(el).on({
-        				mouseenter: function() 
-						{
-						    //stuff to do on mouseover
-						    if( Flask.hero_hover_off_timer[i] ){
-						        clearTimeout( Flask.hero_hover_off_timer[i] );
-						        Flask.hero_hover_off_timer[i] = null;
-						    } else {
-						        Flask.hover_over_hero_story(    Flask.hero_stories.children[i], i, this ); 
-						    }
-						
-						},
-						mouseleave: function()
-						{
-						    //stuff to do on mouseleave
-						    Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
-						}
-						});
-/*
-            function() { 
-                if( Flask.hero_hover_off_timer[i] ){
-                    clearTimeout( Flask.hero_hover_off_timer[i] );
-                    Flask.hero_hover_off_timer[i] = null;
-                } else {
-                    Flask.hover_over_hero_story(    Flask.hero_stories.children[i], i, this ); 
-                }
-            }, 
-            function() { 
-               var el = this;
-               Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
-            }
-        );
-        */
-        
+        $(el).on({
+			mouseenter: function() 
+			{
+			    //stuff to do on mouseover
+			    if( Flask.hero_hover_off_timer[i] ){
+			        clearTimeout( Flask.hero_hover_off_timer[i] );
+			        Flask.hero_hover_off_timer[i] = null;
+			    } else {
+			        Flask.hover_over_hero_story( Flask.hero_stories.children[i], i, this ); 
+			    }
+			
+			},
+			mouseleave: function()
+			{
+			    //stuff to do on mouseleave
+			    Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
+			}
+			});        
     },
     resize_circle: function( item,  width, height ) {
         if(!height)
@@ -547,15 +640,14 @@ if (document.all && !window.setInterval.isPolyfill) {
     /* LINKS */
     add_link: function( item, num ) {
         
-        var bubles = jQuery('#bubbles');
-        
+        var bubles = $('#bubbles');
 
         if( 'bubble' == item.kind ) {
-            jQuery( Flask.bubble_link_template( loop_json[num] ) )
+            $( Flask.bubble_link_template( loop_json.story[num], num ,'' ) )
             .appendTo(Flask.canvas_wrap)
-            .css({'left' : (item.position.x-17), 'top' : (item.position.y+61)})
-            .on('click', function() { Flask.click_bubble( item , this ); })
-            .hover( function() { Flask.hover_over_bubble( item ); } ,function() { Flask.hover_off_bubble( item ); } );
+            .css({'left' : (item.position.x-37), 'top' : (item.position.y+41)})
+            .hover( function() { Flask.hover_over_bubble( item, loop_json.story[num], this, true ); } ,function() { Flask.hover_off_bubble( item, this, true ); } ).on('click', function(event) { Flask.click_bubble( loop_json.story[num] ); });
+            
             
         } else {
             // item.selected = true;
@@ -564,52 +656,71 @@ if (document.all && !window.setInterval.isPolyfill) {
 
         }
     },
-    click_bubble: function( item, el ) {
-        var elm = jQuery(el);
-        
-        elm.find('.bubble-link-shell').addClass('show');
-        elm.find('.bubble-link-excerpt').addClass('show').animate({'height':47},100);
+    click_bubble: function( item ) {
+    	if( typeof item != undefined ){
+    		window.location.href=item.permalink;
+    	}
+                
     },
-    hover_over_bubble: function( item ) {
-        Flask.link_added = true;
+    hover_over_bubble: function( item, data, el, single ) {
+        if(single) {
+	        Flask.link_added = true;
+	        
+	        var size = data.commitments.length;
+	        
+	        var to      = new paper.Point(item.position.x,item.position.y);
+	        item.visible = true;
+	        
+	        for( var i=0;i < size;i++) {
+	        	var destination = $( '#'+data.commitments[i].slug );
+	        	
+	        	Flask.fade_canvas(destination);
+	        	var position = destination.position();
+	        	var width = destination.width(); 
+	        
+	        	var from    = new paper.Point( position.left + width/2 , position.top);
+	        	Flask.draw_curve_line( from, to );
+	
+	        }   
+        }
+        var elm = $(el);
+        elm.find('.bubble-link-excerpt').addClass('show').animate({'height':100},100);
         
-        var destination = $( '#aboriginal-engagement' );
-        Flask.fade_canvas(destination);
-        var position = destination.position();
-        var width = destination.width(); 
-        item.visible = false;
-        var from    = new paper.Point( position.left + width/2 , position.top);
-        var to      = new paper.Point(item.position.x,item.position.y);
-        
-        Flask.draw_curve_line( from, to );
-    
     },
-    hover_off_bubble: function( item ){
+    hover_off_bubble: function( item, el, single ){
+    	
         // remove lines 
-        item.visible = true;
-        Flask.lines_group.removeChildren();
-        Flask.all_lines.removeChildren();
+        if( single ){
+	        Flask.link_added = false;
+	        item.visible = true;
+	        Flask.lines_group.removeChildren();
+	        Flask.all_lines.removeChildren();
+	        
+	        
+	        
+	        $(this).on( 'mousemove', Flask.mouse_move_off_bubble);
+	        Flask.show_canvas();
+        }
+        var elm = $(el);
+        elm.find('.bubble-link-excerpt').removeClass('show').css({'height': 0});
         
-        Flask.link_added = false;
         
-        $(this).on( 'mousemove', Flask.mouse_move_off_bubble);
-        Flask.show_canvas();
     },
     hover_over_hero_story: function( item, num, el){
-        console.log( 'hover over hero story' );
+
         if( Flask.lock_links )
             return;
-
-
+		
         var new_width = item.children[0].width;
         var new_height = item.children[0].height;
         var move_by_top =  new_height - item.children[0].height;
         var move_by_left = new_width - item.children[0].width;
+        
         Flask.scale_up_hero_story(item, num, el);
         
         Flask.link_added = true;
         
-        var destination = $( '#international-engagement' );
+        var destination = $( '#'+loop_json.hero[num].commitments[0].slug );
         Flask.fade_canvas(destination);
         var position = destination.position();
         var width = destination.width(); 
@@ -619,17 +730,28 @@ if (document.all && !window.setInterval.isPolyfill) {
         Flask.draw_curve_line( from, to );
 
         Flask.delay = true;
+        
         setTimeout( function(){
             Flask.delay = false;
         }, 200);
-
+        
+        Flask.hover_check = setInterval(function() {
+        	// check weather we are in or out again. 
+        	// sometimes the mouse moves fast
+        	if( !$(el).parent().is(":hover") ){
+             		Flask.hover_off_hero_story( item, num, el );
+             		clearInterval( Flask.hover_check );
+        	}
+        }, 201 );
         
     },
     hover_off_hero_story: function( item, num, el ){
-        console.log( 'hover off hero story' );
-
+    	// for good measure
+    	//clearInterval( Flask.hover_check );
+        
         if( Flask.lock_links || Flask.delay )
             return;
+            
         if( Flask.hero_hover_off_timer[num] )
             Flask.hero_hover_off_timer[num] = null;
 
@@ -648,7 +770,7 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     scale_up_hero_story: function(item, num, el ){
 
-        var elm = jQuery(el);
+        var elm = $(el);
         item.visible = false;
 
         var new_width = item.children[0].width;
@@ -675,12 +797,11 @@ if (document.all && !window.setInterval.isPolyfill) {
         } else {
             elm.width( new_elm_width * Flask.small_circle_vs_big_circle).height( new_elm_width * Flask.small_circle_vs_big_circle );
             elm.siblings('a').width( new_elm_width).height(new_elm_width);
-
         }
 
     },
     scale_down_hero_story: function( item, num, el ){
-        var elm = jQuery(el);
+        var elm = $(el);
         var new_width = item.children[0].width;
         var new_elm_width = hero_stories_points[num].size * 2;
 
@@ -698,11 +819,11 @@ if (document.all && !window.setInterval.isPolyfill) {
             elm.siblings('a').width( new_elm_width ).height( new_elm_width );
         }
     },
-    bubble_link_template: function ( data ) {
+    bubble_link_template: function ( data ,num , class_name) {
         
-        var html  = '<div class="bubble-paper bubble"><a href="#" class="bubble-link">';
-            html += '<span class="bubble-link-shell">'+ data.title +'</span><span class="bubble-link-excerpt">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</span>';
-            html += '</a></div>';
+        var html  = '<div class="bubble-wrap" id="bubble-wrap-'+num+'"><div class="bubble-paper bubble '+class_name+'"><a href="'+data.permalink+'" class="bubble-link">';
+            html += '<span class="bubble-link-shell"> '+ data.title +'</span><span class="bubble-link-excerpt">'+data.excerpt+' <span class="bubble-readmore">read more</span> </span>';
+            html += '</a></div></div>';
             
 
         return html;
@@ -710,14 +831,20 @@ if (document.all && !window.setInterval.isPolyfill) {
     mouse_move_off_bubble: function( event ){
         
     },
-    add_bright_link: function( item ){
-        jQuery( '<div class="bubble-paper bubble bubble-bright"><a href="#" class="bubble-link"><span class="bubble-link-shell">Goals that are not written down</span></a></div>' ).appendTo( Flask.canvas_wrap ).css( { 'left' : (item.position.x-17), 'top' : (item.position.y+61) } );
+    add_bright_link: function( item, data, num ){
+    
+    
+    	$( Flask.bubble_link_template( data, num, 'bubble-bright' ) )
+            .appendTo(Flask.canvas_wrap)
+            .css({'left' : (item.position.x-37), 'top' : (item.position.y+41)})
+            .hover( function() { Flask.hover_over_bubble( item, loop_json.story[num], this , false ); } ,function() { Flask.hover_off_bubble( item, this , false ); } )
+            .on('click', function( event ) { Flask.click_bubble( loop_json.story[num] ); }); 
     
     },
     remove_links : function() {
         
         if( !Flask.link_added ){
-            Flask.canvas_wrap.find('.bubble-paper').remove();
+            Flask.canvas_wrap.find('.bubble-wrap').remove();
             Flask.hero_stories_divs.addClass('icon-hide');
         }
     },
@@ -734,16 +861,14 @@ if (document.all && !window.setInterval.isPolyfill) {
             return;
         }
         
-        
         for (var i = 0; i < numbler_of_lines; i++) {
-            
+   
             Flask.draw_animated_line( Flask.lines_group.children[i] );
-        
+    
         }
         Flask.draw_line_segment++;       
     },
     get_circle_position: function ( position, data, image, vertically, scale ){
-        
         var size = data.size;
         var y,x;
         if( 'bottom' == vertically ){
@@ -771,6 +896,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         var point = new paper.Point( x, y );
         
         return position.add(point);
+        
         
     },
     draw_dot: function( point , color) {
@@ -834,67 +960,75 @@ if (document.all && !window.setInterval.isPolyfill) {
         Flask.link_added = true;
         
         var destination = $(el);
+        var id = destination.attr('id'); 
+       
         Flask.fade_canvas(destination);
         var position = destination.position();
         var width = destination.width(); 
             
         var from    = new paper.Point( position.left + width/2 , position.top);
+        if( typeof Flask.commitment_cache[id] === 'undefined' || Flask.commitment_cache[id].lenght == 0 ){
+        	
+        	Flask.commitment_cache[id] = [];
+        	 
+        	var number_of_circles = Flask.bubbles.children.length;
+     		
+	        for (var i = 0; i < number_of_circles; i++) {
+	             var data = loop_json.story[i];
+	             var size = data.commitments.length;
+	        	
+	        	for( var j=0;j < size;j++) {
+	        		
+	        		if( id == data.commitments[j].slug && Flask.bubbles.children[i].visible ) {
+	        		
+	        		var to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
+	                
+	                Flask.add_bright_link(Flask.bubbles.children[i], loop_json.story[i], i );
+	                Flask.draw_curve_line(from, to);
+	                
+	                Flask.commitment_cache[id].push(i);
+	        		
+	        		}
+	        	}      
+	        }
+		} else {
+			var commitment_cache_size = Flask.commitment_cache[id].length; 
+			for (var j = 0; j < commitment_cache_size; j++) {
+				
+				var i = Flask.commitment_cache[id][j];
+				
+				
+				if( Flask.bubbles.children[i].visible ) {
+					var to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
+	                
+	            	Flask.add_bright_link(Flask.bubbles.children[i], loop_json.story[i], i);
+	            	Flask.draw_curve_line(from, to);
+	            }
+				
+			}
+		}
+       
+       /* HERO STORY */
+       // go to random hero story 
+       // go though all 9 hero stories and find the right
+       for (var i = 0; i < 9; i++) {
+       		  
+	           if( id == loop_json.hero[i].commitments[0].slug ) {
+	        		var random_num = i;     	
+	        }      
+	    }
         
-        var number_of_circles = Flask.bubbles.children.length;
-        
-        // this part needs to get doen better
-        
-        var random  = Math.floor((Math.random()*number_of_circles) + 1 );
-        var random2 = Math.floor((Math.random()*number_of_circles) + 1 );
-        var random3 = Math.floor((Math.random()*number_of_circles) + 1 );
-        var random4 = Math.floor((Math.random()*number_of_circles) + 1 );
-        var to = {};
-        for (var i = 0; i < number_of_circles; i++) {
-            
-            if( i == random ) {
-                
-                to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
-                
-                Flask.add_bright_link(Flask.bubbles.children[i]);
-                Flask.draw_curve_line(from, to);
-                
-            } else if( i == random2 ){
-                
-                to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
-                
-                Flask.add_bright_link(Flask.bubbles.children[i]);
-                Flask.draw_curve_line(from, to);
-                
-
-            } else if( i == random3 ){
-                
-                to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
-                
-                Flask.add_bright_link(Flask.bubbles.children[i]);
-                Flask.draw_curve_line(from, to);
-
-            } else if( i == random4 ){
-                
-                to      = new paper.Point( Flask.bubbles.children[i].position.x, Flask.bubbles.children[i].position.y );
-                
-                Flask.add_bright_link(Flask.bubbles.children[i]);
-                Flask.draw_curve_line(from, to);
-        
-            }        
-        }
-        var random_num = Flask.random( 0, 8 );
         // add a link to 
         to      = new paper.Point( Flask.hero_stories.children[random_num].children[1].position.x, Flask.hero_stories.children[random_num].children[1].position.y );
+        
+        
         Flask.add_link(Flask.hero_stories.children[random_num], random_num);
-
+		
         Flask.draw_curve_line(from, to);
-    
-       
     
     },
     off_commitment_over: function(){
         // remove the lines back to normal
-        
         
         if( !Flask.lock_links ){
             
@@ -918,7 +1052,7 @@ if (document.all && !window.setInterval.isPolyfill) {
             Flask.lock_links = true;
             // we also need to change the icon to a lock
             // disable all the other commitments
-            jQuery(el).addClass('locked');
+            $(el).addClass('locked');
         }
     }
 };
