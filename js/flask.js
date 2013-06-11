@@ -1,3 +1,4 @@
+// console.log('loaded flask');
 var bubble_points = [	
 {x:342.5,y:393},
 {x:656.5,y:256},
@@ -155,6 +156,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         debug: false,
         commitment_cache: {},
         hover_check: false,
+        hover_check_parent: {},
        
     init: function() {
     
@@ -169,7 +171,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         Flask.walk_path_points   = 2000;
         Flask.walk_path_hero    = 2000;
         Flask.draw_line_points   = 30;
-        Flask.increment_opacity  = 0.0015;
+        Flask.increment_opacity  = 0.0025;
         Flask.opacity_min        = 0.3;
         Flask.opacity_max        = 1;
         Flask.fade_bubbles_incoment = 0.055;
@@ -244,20 +246,20 @@ if (document.all && !window.setInterval.isPolyfill) {
         Flask.bubbles = new paper.Group();
         Flask.hero_stories = new paper.Group();
         Flask.hero_stories_hitarea = new paper.Group();
-        // lets add the story icon to our flask 
+
         Flask.story_icon = new paper.Raster( 'icon-story' ); // the story icon
-        // Flask.story_icon.visible = false;
-        // Flask.story_icon.width = 27;
-        // Flask.story_icon.height = 27;
+
         Flask.story_icon.visible = false;
         Flask.walk_paths = Flask.create_walk_paths( Flask.num_of_walk_paths);
-
+		Flask.bubbles.moving = true;
         Flask.tool = new Tool();
         Flask.tool.onMouseMove = Flask.onMouseMove;
         Flask.tool.onMouseDown = Flask.onClick;
         
         Flask.lines_group = new paper.Group();
         Flask.all_lines   = new paper.Group();
+        
+        // Flask.draw_corners();
         
     },
     runAnimateFrame: function( event ){
@@ -278,11 +280,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         // view.viewSize = [ Flask.canvas_wrap.width(),450];
     },
     onClick: function (event) {
-        Flask.remove_links();
-        //if(Flask.debug){
-           // console.log( '{x:'+event.point.x+',y:'+event.point.y+'},' );
-        //}
-        
+        Flask.remove_links();  
     },
     onMouseMove: function( event ){
        
@@ -293,6 +291,11 @@ if (document.all && !window.setInterval.isPolyfill) {
 	        Flask.hit_test( event, 'bubble');      
 	        Flask.hit_test( event, 'hero');
        }
+    },
+    draw_corners: function(){
+    	
+    	var dot = new paper.Path.Circle(new paper.Point(60, 0), 2);
+    	dot.fillColor = 'red';
     },
     hit_test: function( event, what ) {
     	
@@ -317,7 +320,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                 hitResult.item = hitResult.item.parent;
             }
             
-            hitResult.item.opacity = 1;
+            hitResult.item.opacity = 0.99;
             
             // Flask.resize_circle( hitResult.item.parent,  Flask.radius_max );
             
@@ -402,6 +405,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                 var img  = new paper.Raster( 'hero-story'+num );
                     img.scale(0.8);
                     img.position =  position;
+                    // img.selected = true;
 
                 var circle_position = Flask.get_circle_position( position , hero_stories_points[num], img, 'bottom', 0.8 );
                
@@ -508,7 +512,8 @@ if (document.all && !window.setInterval.isPolyfill) {
 			mouseleave: function()
 			{
 			    //stuff to do on mouseleave
-			    Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 100, Flask.hero_stories.children[i], i, this);
+			   // console.log('mouse leave fire : hover_off_here_story');
+			    Flask.hero_hover_off_timer[i] = setTimeout( Flask.hover_off_hero_story, 60, Flask.hero_stories.children[i], i, this);
 			}
 			});        
     },
@@ -601,9 +606,10 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     animate_canvas: function( event ){
         
-        if( 'animating' == Flask.fade_animation_state ){
+        if( 'animating' == Flask.fade_animation_state ) {
             // lets fade out the bubbles to almost nothing
-            
+           // console.log()
+            Flask.opacity_group
             if( Flask.opacity_group.opacity > Flask.opacity_min ){
                 Flask.opacity_group.opacity = Flask.opacity_group.opacity - Flask.fade_bubbles_incoment;
             } else{
@@ -621,8 +627,8 @@ if (document.all && !window.setInterval.isPolyfill) {
         }
     },
     fade_canvas: function( el ) {
-        
-        
+        //Flask.opacity_group.selected = true;
+       	// console.log('fade in canvas');
         Flask.fade_animation_state = 'animating';        
         
         Flask.commitments.addClass('hide-away');
@@ -630,6 +636,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         
     },
     show_canvas: function(){
+        //Flask.opacity_group.selected = false;
         
         Flask.commitments.removeClass('hide-away').removeClass('still-show');
         Flask.fade_animation_state = 'show';
@@ -661,6 +668,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                 
     },
     hover_over_bubble: function( item, data, el, single ) {
+    	// console.log('hover_over_bubble fired');
         if(single) {
 	        Flask.link_added = true;
 	        
@@ -686,7 +694,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         
     },
     hover_off_bubble: function( item, el, single ){
-    	
+    	// console.log('hover_off_bubble fired');
         // remove lines 
         if( single ){
 	        Flask.link_added = false;
@@ -705,7 +713,8 @@ if (document.all && !window.setInterval.isPolyfill) {
         
     },
     hover_over_hero_story: function( item, num, el){
-
+		
+		// console.log('hover_over_here_story fired');
         if( Flask.lock_links )
             return;
 		
@@ -732,21 +741,27 @@ if (document.all && !window.setInterval.isPolyfill) {
         setTimeout( function(){
             Flask.delay = false;
         }, 200);
-        
+        Flask.hover_check_parent = $(el).parent();
         Flask.hover_check = setInterval(function() {
+        	
         	// check weather we are in or out again. 
+        	// console.log('Hover check fire : hover_off_here_story', Flask.hover_check_parent.is(":hover") );
         	// sometimes the mouse moves fast
-        	if( !$(el).parent().is(":hover") ){
+        	if( !Flask.hover_check_parent.is(":hover") ){
+        			
+        			clearInterval( Flask.hover_check );
+        			
              		Flask.hover_off_hero_story( item, num, el );
-             		clearInterval( Flask.hover_check );
         	}
         }, 201 );
+        
+       // console.log('hover_over_here_story finished');
         
     },
     hover_off_hero_story: function( item, num, el ){
     	// for good measure
     	//clearInterval( Flask.hover_check );
-        
+       // console.log('hover_off_hero_story fired');
         if( Flask.lock_links || Flask.delay )
             return;
             
@@ -755,7 +770,7 @@ if (document.all && !window.setInterval.isPolyfill) {
 
         Flask.scale_down_hero_story( item, num, el );
         
-        Flask.hero_stories_divs.addClass('icon-hide');
+        
         Flask.show_canvas();
         Flask.link_added = false;
         
@@ -764,6 +779,11 @@ if (document.all && !window.setInterval.isPolyfill) {
         // remove lines 
         Flask.lines_group.removeChildren();
         Flask.all_lines.removeChildren();
+        
+        clearInterval( Flask.hover_check );
+        
+        Flask.hero_stories_divs.addClass('icon-hide');
+       // console.log('hover_off_hero_story finished');
 
     },
     scale_up_hero_story: function(item, num, el ){

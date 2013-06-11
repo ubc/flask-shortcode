@@ -4,7 +4,7 @@ Plugin Name: Flask Shortcode
 Plugin URI: http://ctlt.ubc.ca
 Description: Lets you display you posts using bubbles
 Author: Enej UBC CTLT
-Version: 0.3
+Version: 1
 */
 
 
@@ -13,7 +13,7 @@ add_action('before_css','flask_load_modernizer');
 function flask_load_modernizer(){
 
 	if( is_front_page() ): ?>
-<script type="text/javascript" src="<?php echo plugins_url( 'js/modernizer.js', __FILE__ ); ?>" ></script>
+<script type="text/javascript" src="<?php echo plugins_url( 'js/modernizer.js', __FILE__ ); ?>?v=1" ></script>
 <?php 
 	endif;
 }
@@ -43,9 +43,8 @@ function flask_shortcode_handler( $atts ) {
 	);
 	
 	
-	wp_enqueue_script( 'loader' , plugins_url( 'js/loader.js', __FILE__ ), array(), '1.0', true );
-	// wp_enqueue_script( 'paperjs' , plugins_url( 'js/paper.js', __FILE__ ), array(), '1.0', true );
-	// wp_enqueue_script( 'flask' , plugins_url( 'js/flask.js', __FILE__ ), array( 'jquery', 'paperjs', 'flask-points' ), '1.0', true );
+	wp_enqueue_script( 'loader' , plugins_url( 'js/loader.js', __FILE__ ), array(), '1.1', true );
+
 	ob_start();
 	
 	$json = flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $filter_1, $filter_2_1, $filter_2_2 );
@@ -59,21 +58,20 @@ function flask_shortcode_handler( $atts ) {
   var flask_plugin_url = '<?php echo plugins_url( 'js',__FILE__); ?>';
   
   var loop_json = <?php echo json_encode($json); ?>
-  
 
 </script>
 
 <div id="bubbles">
 	<ul id="commitments" class="strategic-plan-actions">
-		<li class="bubble-commitment-1"><a  id="aboriginal-engagement" href="/strategicplan/the-plan/aboriginal-engagement" alt="bubble-1" ><strong>Aboriginal</strong> <br /> Engagement</a></li>
-		<li class="bubble-commitment-2"><a id="alumni-engagement" href="/alumni-engagement" alt="bubble-2"><strong>Alumni</strong> <br />Engagement</a></li>
-		<li class="bubble-commitment-3"><a id="intercultural-understanding" href="/intercultural-understanding" alt="bubble-3"><strong>Intercultural</strong> Understanding</a></li>
-		<li class="bubble-commitment-4"><a class="main-commitment" id="research-excellence" href="/research-excellence" alt="bubble-5"><strong>Research</strong> <br />Excellence</a></li>
-		<li class="bubble-commitment-5"><a class="main-commitment" id="student-learning"  href="/student-learning" alt="bubble-4"><strong>Student</strong> <br />Learning</a></li>
-		<li class="bubble-commitment-6"><a class="main-commitment" id="community-engagement"  href="/community-engagement" alt="bubble-6"><strong>Community</strong> Engagement</a></li>
-		<li class="bubble-commitment-7"><a id="international-engagement" href="/international-engagement" alt="bubble-7"><strong>International</strong> Engagement</a></li>
-		<li class="bubble-commitment-8"><a id="outstanding-work-environment" href="/outstanding-work-environment" alt="bubble-8"><strong>Outstanding Work</strong> Environment</a></li>
-		<li class="bubble-commitment-9"><a id="sustainability" href="/sustainability" alt="bubble-9"><br /><strong>Sustainability</strong></a></li>
+		<li class="bubble-commitment-1"><a  id="aboriginal-engagement" href="/aboriginal-engagement-2" alt="bubble-1" ><strong>Aboriginal</strong> <br /> Engagement</a></li>
+		<li class="bubble-commitment-2"><a id="alumni-engagement" href="/alumni-engagement-2" alt="bubble-2"><strong>Alumni</strong> <br />Engagement</a></li>
+		<li class="bubble-commitment-3"><a id="intercultural-understanding" href="/intercultural-understanding-2" alt="bubble-3"><strong>Intercultural</strong> Understanding</a></li>
+		<li class="bubble-commitment-4"><a class="main-commitment" id="research-excellence" href="/research-excellence-2" alt="bubble-5"><strong>Research</strong> <br />Excellence</a></li>
+		<li class="bubble-commitment-5"><a class="main-commitment" id="student-learning-2"  href="/student-learning-3" alt="bubble-4"><strong>Student</strong> <br />Learning</a></li>
+		<li class="bubble-commitment-6"><a class="main-commitment" id="community-engagement-2"  href="/community-engagement" alt="bubble-6"><strong>Community</strong> Engagement</a></li>
+		<li class="bubble-commitment-7"><a id="international-engagement" href="/international-engagement-2" alt="bubble-7"><strong>International</strong> Engagement</a></li>
+		<li class="bubble-commitment-8"><a id="outstanding-work-environment" href="/outstanding-work-environment-2" alt="bubble-8"><strong>Outstanding Work</strong> Environment</a></li>
+		<li class="bubble-commitment-9"><a id="sustainability" href="/sustainability-2" alt="bubble-9"><br /><strong>Sustainability</strong></a></li>
 	</ul>
 	
 	<div id="canvas-wrap" <?php if(isset($_GET['show-bg'])){?> class="show-bg" <?php } ?>>
@@ -127,6 +125,7 @@ function flask_shortcode_handler( $atts ) {
  
 
 <style >
+
 #bubbles{
 	position: relative;
 	height: 550px;
@@ -399,9 +398,8 @@ function flask_shortcode_handler( $atts ) {
 	text-transform: none;
 	padding: 0px 15px;
 	text-align: left;
-
 }
-.ie9 .bubble-link-excerpt,
+
 .bubble-link-excerpt.show{
 	display: block;
 }
@@ -600,6 +598,19 @@ function flask_shortcode_taxonomy_filter( $taxonomy ) {
 	    'orderby'       => 'name', 
 	    'order'         => 'ASC',
 	    'hide_empty'    => true, 
+	    'fields'        => 'all', 
+	    'hierarchical'  => false, 
+	);
+	$terms = get_terms( $taxonomies, $args );
+	if( is_array($terms)): 
+	foreach( $terms as $term ):
+		
+		?><li><a href="#<?php echo $taxonomy.'-'.$term->slug; ?>" data-taxonomy="<?php echo esc_attr($taxonomy); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"><?php echo $term->name; ?></a></li><?php
+		
+	endforeach;
+	endif;
+}
+'hide_empty'    => true, 
 	    'fields'        => 'all', 
 	    'hierarchical'  => false, 
 	);
