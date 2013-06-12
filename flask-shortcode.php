@@ -13,7 +13,7 @@ add_action('before_css','flask_load_modernizer');
 function flask_load_modernizer(){
 
 	if( is_front_page() ): ?>
-<script type="text/javascript" src="<?php echo plugins_url( 'js/modernizer.js', __FILE__ ); ?>?v=1" ></script>
+<script type="text/javascript" src="<?php echo plugins_url( 'js/modernizer.js', __FILE__ ); ?>?v=2" ></script>
 <?php 
 	endif;
 }
@@ -43,7 +43,7 @@ function flask_shortcode_handler( $atts ) {
 	);
 	
 	
-	wp_enqueue_script( 'loader' , plugins_url( 'js/loader.js', __FILE__ ), array(), '1.1', true );
+	wp_enqueue_script( 'loader' , plugins_url( 'js/loader.js', __FILE__ ), array(), '1.2', true );
 
 	ob_start();
 	
@@ -598,19 +598,6 @@ function flask_shortcode_taxonomy_filter( $taxonomy ) {
 	    'orderby'       => 'name', 
 	    'order'         => 'ASC',
 	    'hide_empty'    => true, 
-	    'fields'        => 'all', 
-	    'hierarchical'  => false, 
-	);
-	$terms = get_terms( $taxonomies, $args );
-	if( is_array($terms)): 
-	foreach( $terms as $term ):
-		
-		?><li><a href="#<?php echo $taxonomy.'-'.$term->slug; ?>" data-taxonomy="<?php echo esc_attr($taxonomy); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"><?php echo $term->name; ?></a></li><?php
-		
-	endforeach;
-	endif;
-}
-'hide_empty'    => true, 
 	    'fields'        => 'all', 
 	    'hierarchical'  => false, 
 	);
