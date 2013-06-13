@@ -67,8 +67,8 @@ function flask_shortcode_handler( $atts ) {
 		<li class="bubble-commitment-2"><a id="alumni-engagement" href="/alumni-engagement-2" alt="bubble-2"><strong>Alumni</strong> <br />Engagement</a></li>
 		<li class="bubble-commitment-3"><a id="intercultural-understanding" href="/intercultural-understanding-2" alt="bubble-3"><strong>Intercultural</strong> Understanding</a></li>
 		<li class="bubble-commitment-4"><a class="main-commitment" id="research-excellence" href="/research-excellence-2" alt="bubble-5"><strong>Research</strong> <br />Excellence</a></li>
-		<li class="bubble-commitment-5"><a class="main-commitment" id="student-learning-2"  href="/student-learning-3" alt="bubble-4"><strong>Student</strong> <br />Learning</a></li>
-		<li class="bubble-commitment-6"><a class="main-commitment" id="community-engagement-2"  href="/community-engagement" alt="bubble-6"><strong>Community</strong> Engagement</a></li>
+		<li class="bubble-commitment-5"><a class="main-commitment" id="student-learning"  href="/student-learning-3" alt="bubble-4"><strong>Student</strong> <br />Learning</a></li>
+		<li class="bubble-commitment-6"><a class="main-commitment" id="community-engagement"  href="/community-engagement-2" alt="bubble-6"><strong>Community</strong> Engagement</a></li>
 		<li class="bubble-commitment-7"><a id="international-engagement" href="/international-engagement-2" alt="bubble-7"><strong>International</strong> Engagement</a></li>
 		<li class="bubble-commitment-8"><a id="outstanding-work-environment" href="/outstanding-work-environment-2" alt="bubble-8"><strong>Outstanding Work</strong> Environment</a></li>
 		<li class="bubble-commitment-9"><a id="sustainability" href="/sustainability-2" alt="bubble-9"><br /><strong>Sustainability</strong></a></li>
