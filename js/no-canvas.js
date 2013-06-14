@@ -37,10 +37,6 @@ jQuery('#filter-1').hide();
 
 jQuery(function(){
 	
-	jQuery('#commitments').find('a').each(function(i, el) {
-		el.href = el.href+"-2";
-	});
-	
 	jQuery(window).resize(function(){
 		flask_on_resize();
 	});
