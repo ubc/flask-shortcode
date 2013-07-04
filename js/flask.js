@@ -691,7 +691,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         }
         var elm = $(el);
         elm.find('.bubble-link-excerpt').addClass('show').animate({'height':100},100);
-        
+        elm.css({'z-index':101});
     },
     hover_off_bubble: function( item, el, single ){
     	// console.log('hover_off_bubble fired');
@@ -709,8 +709,8 @@ if (document.all && !window.setInterval.isPolyfill) {
         }
         var elm = $(el);
         elm.find('.bubble-link-excerpt').removeClass('show').css({'height': 0});
-        
-        
+        elm.css({'z-index':100});
+       
     },
     hover_over_hero_story: function( item, num, el){
 		
