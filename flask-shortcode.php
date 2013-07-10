@@ -443,8 +443,8 @@ function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'
 	?>
 	<div class="icon-hide icon-hero-story icon-hero-size-<?php echo $size; ?> circle-position-<?php echo $position; ?>" id="hero-story<?php echo $number;?>-wrap">
 	<img src="<?php echo $url;?>" id="hero-story<?php echo $number;?>" />
-	<a href="<?php echo esc_url($link); ?>" class="small-circle">&nbsp</a>
-	<a href="<?php echo esc_url($link); ?>" class="big-circle ">&nbsp</a>
+	<a href="<?php echo esc_url($link); ?>" class="small-circle">&nbsp;</a>
+	<a href="<?php echo esc_url($link); ?>" class="big-circle ">&nbsp;</a>
 	</div>
 	<?php 
 }

@@ -1,4 +1,3 @@
-// console.log('loaded flask');
 var bubble_points = [	
 {x:342.5,y:393},
 {x:656.5,y:256},
@@ -199,9 +198,7 @@ if (document.all && !window.setInterval.isPolyfill) {
                                  function() { Flask.off_commitment_over(this); } );
         Flask.commitments.click( function(e) { e.preventDefault(); Flask.on_commitment_click(this); } );
         
-        
-        
-         $('#filter-1').on('click', 'a', function(event) {
+        $('#filter-1').on('click', 'a', function(event) {
         	
         	var el = $(this);
         	var item = el.data('slug');
@@ -305,11 +302,12 @@ if (document.all && !window.setInterval.isPolyfill) {
                 hitResult = Flask.hero_stories.hitTest( event.point );
             break;
             case 'bubble':
-            	
+            	/*
             	if( isMSIE ){
             	var add_point = new paper.Point(0, 27);
             	event.point = event.point.add(add_point);
-                }
+            	Flask.draw_dot( event.point );
+                }*/
                 hitResult = Flask.bubbles.hitTest( event.point );
             break;
         }
@@ -440,8 +438,7 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     filter_bubbles: function( filter, item ){
  		Flask.show_all_bubbles( false );
- 		
- 	   	
+ 	
     	if( 'filter_1' == filter ){
     	
      		// loop though the stories
@@ -608,7 +605,7 @@ if (document.all && !window.setInterval.isPolyfill) {
         
         if( 'animating' == Flask.fade_animation_state ) {
             // lets fade out the bubbles to almost nothing
-           // console.log()
+          
             Flask.opacity_group
             if( Flask.opacity_group.opacity > Flask.opacity_min ){
                 Flask.opacity_group.opacity = Flask.opacity_group.opacity - Flask.fade_bubbles_incoment;
@@ -646,13 +643,32 @@ if (document.all && !window.setInterval.isPolyfill) {
     add_link: function( item, num ) {
         
         var bubles = $('#bubbles');
-
+		
         if( 'bubble' == item.kind ) {
+        
+        	if( isMSIE ){ 
+        		$( Flask.bubble_link_template( loop_json.story[num], num ,'' ) ).appendTo(Flask.canvas_wrap)
+   				.css({'left' : (item.position.x-37), 'top' : (item.position.y+41)})
+   				.on({
+   					mouseleave: function() { Flask.hover_off_bubble( item, this, true ); },
+					click: function(event) { Flask.click_bubble( loop_json.story[num] ); }
+   				});
+   				 Flask.hover_over_bubble( item, loop_json.story[num], '#bubble-wrap-'+num, true )
+   				
+           	} else {
+        	
             $( Flask.bubble_link_template( loop_json.story[num], num ,'' ) )
             .appendTo(Flask.canvas_wrap)
             .css({'left' : (item.position.x-37), 'top' : (item.position.y+41)})
-            .hover( function() { Flask.hover_over_bubble( item, loop_json.story[num], this, true ); } ,function() { Flask.hover_off_bubble( item, this, true ); } ).on('click', function(event) { Flask.click_bubble( loop_json.story[num] ); });
+            .on({
+				mouseenter: function() { Flask.hover_over_bubble( item, loop_json.story[num], this, true ); },
+				mouseleave: function() { Flask.hover_off_bubble( item, this, true ); },
+				click: function(event) { Flask.click_bubble( loop_json.story[num] ); }
+			}); 
             
+            
+            	
+            }
             
         } else {
             // item.selected = true;
@@ -668,7 +684,8 @@ if (document.all && !window.setInterval.isPolyfill) {
                 
     },
     hover_over_bubble: function( item, data, el, single ) {
-    	// console.log('hover_over_bubble fired');
+    	
+    	console.log('hover_over_bubble fired');
         if(single) {
 	        Flask.link_added = true;
 	        
@@ -694,7 +711,8 @@ if (document.all && !window.setInterval.isPolyfill) {
         elm.css({'z-index':101});
     },
     hover_off_bubble: function( item, el, single ){
-    	// console.log('hover_off_bubble fired');
+    	
+    	
         // remove lines 
         if( single ){
 	        Flask.link_added = false;
@@ -714,7 +732,7 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     hover_over_hero_story: function( item, num, el){
 		
-		// console.log('hover_over_here_story fired');
+		
         if( Flask.lock_links )
             return;
 		
