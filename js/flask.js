@@ -685,7 +685,7 @@ if (document.all && !window.setInterval.isPolyfill) {
     },
     hover_over_bubble: function( item, data, el, single ) {
     	
-    	console.log('hover_over_bubble fired');
+    	// console.log('hover_over_bubble fired');
         if(single) {
 	        Flask.link_added = true;
 	        
