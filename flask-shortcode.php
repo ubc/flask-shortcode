@@ -4,7 +4,7 @@ Plugin Name: Flask Shortcode
 Plugin URI: http://ctlt.ubc.ca
 Description: Lets you display you posts using bubbles
 Author: Enej UBC CTLT
-Version: 1
+Version: 1.0.0
 */
 
 
