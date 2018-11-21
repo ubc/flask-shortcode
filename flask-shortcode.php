@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 Plugin Name: Flask Shortcode
 Plugin URI: http://ctlt.ubc.ca
@@ -14,7 +14,7 @@ function flask_load_modernizer(){
 
 	if( is_front_page() ): ?>
 <script type="text/javascript" src="<?php echo plugins_url( 'js/modernizer.js', __FILE__ ); ?>?v=2" ></script>
-<?php 
+<?php
 	endif;
 }
 
@@ -22,31 +22,31 @@ add_shortcode( 'flask', 'flask_shortcode_handler' );
 
 /**
  * flask_shortcode_handler function.
- * 
+ *
  * @access public
  * @param mixed $atts
  * @return void
  */
 function flask_shortcode_handler( $atts ) {
-	
+
 	// Attributes
 	extract( shortcode_atts(
 		array(
 			'query' => '',
 			'taxonomy'   => '',
 			'taxonomy_is'=> '',
-			'filter_1'   => '',		
-			'filter_2_1'   => '',			
+			'filter_1'   => '',
+			'filter_2_1'   => '',
 			'filter_2_2'   => '',
 			'num'		 => 30,
 		), $atts )
 	);
-	
-	
+
+
 	wp_enqueue_script( 'loader' , plugins_url( 'js/loader.js', __FILE__ ), array(), '1.2', true );
 
 	ob_start();
-	
+
 	$json = flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $filter_1, $filter_2_1, $filter_2_2 );
 	/* echo '<pre>';
 	var_dump($json['hero']);
@@ -56,7 +56,7 @@ function flask_shortcode_handler( $atts ) {
   ?>
   <script type="text/javascript" >
   var flask_plugin_url = '<?php echo plugins_url( 'js',__FILE__); ?>';
-  
+
   var loop_json = <?php echo json_encode($json); ?>
 
 </script>
@@ -73,42 +73,67 @@ function flask_shortcode_handler( $atts ) {
 		<li class="bubble-commitment-8"><a id="outstanding-work-environment" href="/outstanding-work-environment-2" alt="bubble-8"><strong>Outstanding Work</strong> Environment</a></li>
 		<li class="bubble-commitment-9"><a id="sustainability" href="/sustainability-2" alt="bubble-9"><br /><strong>Sustainability</strong></a></li>
 	</ul>
-	
+
 	<div id="canvas-wrap" <?php if(isset($_GET['show-bg'])){?> class="show-bg" <?php } ?>>
 	 <canvas id="canvas" height="450px" ></canvas>
 	</div>
 	<!-- images -->
 	<img src="<?php echo plugins_url('flask-shortcode'); ?>/img/icon-story-small.png" id="icon-story" class="icon-hide" width="56" height="56"  />
-	
-	<?php 
-	
-	flask_hero_img($json['hero'][0], 0, 'right', 'small' ); 
-	flask_hero_img($json['hero'][1], 1, 'left', 'small' ); 
-	flask_hero_img($json['hero'][2], 2, 'left' , 'medium'); 
-	flask_hero_img($json['hero'][3], 3, 'right', 'medium' ); 
-	flask_hero_img($json['hero'][4], 4, 'right' , 'large'); 
-	flask_hero_img($json['hero'][5], 5, 'left' , 'medium'); 
-	flask_hero_img($json['hero'][6], 6, 'left', 'large'); 
-	flask_hero_img($json['hero'][7], 7,'left' , 'small' ); 
-	flask_hero_img($json['hero'][8], 8, 'right' , 'medium'); 
-	
-	
+
+	<?php
+
+	if ( isset( $json['hero'][0] ) ) {
+		flask_hero_img($json['hero'][0], 0, 'right', 'small' );
+	}
+
+	if ( isset( $json['hero'][1] ) ) {
+		flask_hero_img($json['hero'][1], 1, 'left', 'small' );
+	}
+
+	if ( isset( $json['hero'][2] ) ) {
+		flask_hero_img($json['hero'][2], 2, 'left' , 'medium');
+	}
+
+	if ( isset( $json['hero'][3] ) ) {
+		flask_hero_img($json['hero'][3], 3, 'right', 'medium' );
+	}
+
+	if ( isset( $json['hero'][4] ) ) {
+		flask_hero_img($json['hero'][4], 4, 'right' , 'large');
+	}
+
+	if ( isset( $json['hero'][5] ) ) {
+		flask_hero_img($json['hero'][5], 5, 'left' , 'medium');
+	}
+
+	if ( isset( $json['hero'][6] ) ) {
+		flask_hero_img($json['hero'][6], 6, 'left', 'large');
+	}
+
+	if ( isset( $json['hero'][7] ) ) {
+		flask_hero_img($json['hero'][7], 7,'left' , 'small' );
+	}
+
+	if ( isset( $json['hero'][8] ) ) {
+		flask_hero_img($json['hero'][8], 8, 'right' , 'medium');
+	}
+
 	/*
-	flask_hero_img('/img/new/small-l2.png', 0, 'right', 'small' ); 
-	flask_hero_img('/img/new/small-r2.png', 1, 'left', 'small' ); 
-	flask_hero_img('/img/new/medium-r2.png', 2, 'left' , 'medium'); 
-	flask_hero_img('/img/new/medium-l2.png', 3, 'right', 'medium' ); 
-	flask_hero_img('/img/new/large-l2.png', 4, 'right' , 'large'); 
-	flask_hero_img('/img/new/medium-r2.png', 5, 'left' , 'medium'); 
-	flask_hero_img('/img/new/large-r2.png', 6, 'left', 'large'); 
-	flask_hero_img('/img/new/small-r2.png', 7,'left' , 'small' ); 
-	flask_hero_img('/img/new/medium-l2.png', 8, 'right' , 'medium'); 
+	flask_hero_img('/img/new/small-l2.png', 0, 'right', 'small' );
+	flask_hero_img('/img/new/small-r2.png', 1, 'left', 'small' );
+	flask_hero_img('/img/new/medium-r2.png', 2, 'left' , 'medium');
+	flask_hero_img('/img/new/medium-l2.png', 3, 'right', 'medium' );
+	flask_hero_img('/img/new/large-l2.png', 4, 'right' , 'large');
+	flask_hero_img('/img/new/medium-r2.png', 5, 'left' , 'medium');
+	flask_hero_img('/img/new/large-r2.png', 6, 'left', 'large');
+	flask_hero_img('/img/new/small-r2.png', 7,'left' , 'small' );
+	flask_hero_img('/img/new/medium-l2.png', 8, 'right' , 'medium');
 	*/
 	?>
-</div><!-- end of bubbles --> 
+</div><!-- end of bubbles -->
 
 	<div id="bubble-filter" class="filter-wrap container" >
-	
+
 		<label>Filter By</label>
 		<?php if( $filter_1 ): ?>
 			<div id="filter-1" class="btn-group dropup">
@@ -122,7 +147,7 @@ function flask_shortcode_handler( $atts ) {
 
 		<a href="/timeline" class="button action">Timeline View <i class="icon-angle-right"></i></a>
 	</div>
- 
+
 
 <style >
 
@@ -180,7 +205,7 @@ function flask_shortcode_handler( $atts ) {
 #commitments li .locked{
 	font-size:11px;
 	line-height: 19px;
-	
+
 }
 #commitments li .still-show:hover{
 	background-position: 50% -412px;
@@ -199,7 +224,7 @@ function flask_shortcode_handler( $atts ) {
 #commitments li .main-commitment.locked{
 	font-size:16px;
 }
-@media (max-width: 979px) { 
+@media (max-width: 979px) {
 	#commitments li{
 		margin:0 -3%;
     	width: 17%;
@@ -207,15 +232,15 @@ function flask_shortcode_handler( $atts ) {
 	#commitments li:nth-child(odd){
 		margin-top: -38px;
 	}
-	
+
 }
 /* Landscape phone to portrait tablet */
-@media (max-width: 767px) { 
-	/* we not have this layout any more… 
+@media (max-width: 767px) {
+	/* we not have this layout any more…
 	Mobile layout now in effect
 	*/
-	
-	
+
+
 }
 /* from home */
 #canvas-wrap{
@@ -232,7 +257,7 @@ function flask_shortcode_handler( $atts ) {
 	margin-left: 0;
 }
 .icon-hero-story img{
-	width: 100%;	
+	width: 100%;
 }
 .big-circle,
 .small-circle{
@@ -377,15 +402,15 @@ function flask_shortcode_handler( $atts ) {
 	color: #FFF;
 }
 /*
-.bubble-link-shell:before { 
-	content:""; 
-	position: absolute; 
-	right: 6px; 
-	top: -15px; 
-	width: 0; height: 0; 
-	border-left: 10px solid transparent; 
-	border-right: 10px solid transparent; 
-	border-top: 12px solid  rgba(44,65,124, 0.4); 
+.bubble-link-shell:before {
+	content:"";
+	position: absolute;
+	right: 6px;
+	top: -15px;
+	width: 0; height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 12px solid  rgba(44,65,124, 0.4);
 }
 */
 .bubble-link-excerpt{
@@ -405,7 +430,7 @@ function flask_shortcode_handler( $atts ) {
 }
 .bubble-bright .bubble-link,
 .bubble:hover .bubble-link{
-	
+
 }
 
 .icon-hide{
@@ -416,14 +441,14 @@ function flask_shortcode_handler( $atts ) {
   <?php
   $output_string = ob_get_contents();
   ob_end_clean();
-  
+
   return $output_string;
-	
+
 }
 
 /**
  * flask_hero_img function.
- * 
+ *
  * @access public
  * @param mixed $url
  * @param mixed $number
@@ -431,13 +456,13 @@ function flask_shortcode_handler( $atts ) {
  * @param string $size (default: 'small')
  * @return void
  */
-function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'){ 
+function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'){
 	if(is_array($json_data ) ) {
-	
+
 		$url = $json_data['meta']['wpcf-lead-story-image'][0];
 		$link = $json_data['permalink'];
 	} else {
-		$url = plugins_url('flask-shortcode') .$url;
+		$url = plugins_url('flask-shortcode');
 		$link = '#';
 	}
 	?>
@@ -446,12 +471,12 @@ function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'
 	<a href="<?php echo esc_url($link); ?>" class="small-circle">&nbsp;</a>
 	<a href="<?php echo esc_url($link); ?>" class="big-circle ">&nbsp;</a>
 	</div>
-	<?php 
+	<?php
 }
 
 /**
  * flask_shortcode_json_output function.
- * 
+ *
  * @access public
  * @param mixed $query
  * @param mixed $num
@@ -460,16 +485,16 @@ function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'
  * @return void
  */
 function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $taxonomy_1, $taxonomy_2_1, $taxonomy_2_2 ) {
-		
+
 
 	if(!empty($query) ):
 		$query = $query.'&posts_per_page='.$num.'&orderby=menu_order&order=ASC';
 	else:
 		$query = $query.'&posts_per_page='.$num.'&orderby=menu_order&order=ASC';
 	endif;
-	
+
 	$query = wp_parse_args( $query );
-	
+
 	if( !empty($taxonomy) && !empty($taxonomy_is)):
 	$query['tax_query'] = array(
 		array(
@@ -481,18 +506,18 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 	endif;
 
 	$the_query = new WP_Query( $query );
-	
+
 	while ( $the_query->have_posts() ) :
 		$the_query->the_post();
-		
+
 		$tags = array();
 		$categories = array();
 		$commitments = array();
 		$taxonomy_1_post_terms  = array();
 		$taxonomy_2_1_post_terms  = array();
 		$taxonomy_2_2_post_terms  = array();
-		
-		
+
+
 		// get the post tags
 		$post_tags = get_the_tags( get_the_ID() );
 		if ( $post_tags ) {
@@ -502,20 +527,22 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 			}
 		// get the post categories
 		$post_categories = get_the_category( get_the_ID() );
-		
+
 		if ($post_categories) {
 			foreach( $post_categories as $categorie) {
 				$categories[]= array( 'name' => $categorie->name, 'url' => get_category_link($categorie->term_id) , 'slug' => $categorie->slug );
 			}
 		}
-		
+
 		$meta = get_post_meta( get_the_ID() );
-		if ( $meta['_thumbnail_id'] ) {
+		if ( isset( $meta['_thumbnail_id'] ) && $meta['_thumbnail_id'] ) {
 			$img = wp_get_attachment_image_src( $meta['_thumbnail_id'][0], 'full' );
 		} else {
-			$img = '';
+			$img = array();
 		}
-		
+
+		$hero_output = array();
+
 		if( isset($meta['wpcf-lead-story']) && $meta['wpcf-lead-story'] == array(1)) {
 			$hero_output[] = array(
 				'permalink' => get_permalink(),
@@ -527,10 +554,10 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 				'categories' => $categories,
 				'commitments' => flask_shortcode_get_terms( get_the_ID(), 'commitment' ),
 				'filter_1'    => flask_shortcode_get_terms( get_the_ID(), $taxonomy_1 ),
-				'image' => $img[0]
+				'image'       => isset( $img[0] ) ? $img[0] : '',
 			);
 		} else {
-			
+
 			$json_output[] = array(
 				'permalink' => get_permalink(),
 				'title'	=> get_the_title(),
@@ -541,19 +568,18 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 				'categories' => $categories,
 				'commitments' => flask_shortcode_get_terms( get_the_ID(), 'commitment' ),
 				'filter_1'    => flask_shortcode_get_terms( get_the_ID(), $taxonomy_1 ),
-				
-				'image' => $img[0]
-				
+				'image'       => isset( $img[0] ) ? $img[0] : '',
+
 			);
 		}
 	endwhile;
 
-	/* Restore original Post Data 
-	 * NB: Because we are using new WP_Query we aren't stomping on the 
+	/* Restore original Post Data
+	 * NB: Because we are using new WP_Query we aren't stomping on the
 	 * original $wp_query and it does not need to be reset.
 	*/
 	wp_reset_postdata();
-	
+
 	return array( 'story' => $json_output, 'hero' => $hero_output );
 
 }
@@ -561,7 +587,7 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 
 /**
  * flask_shortcode_get_terms function.
- * 
+ *
  * @access public
  * @param mixed $post_id
  * @param mixed $taxonomy
@@ -570,43 +596,46 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
 function flask_shortcode_get_terms( $post_id, $taxonomy ){
 
 	$taxonomy_terms = get_the_terms( $post_id, $taxonomy );
-	
+
 	$terms = array();
-	
+
 	if( $taxonomy_terms ) {
 		foreach( $taxonomy_terms as $term ) {
+			if ( ! is_object( $term ) ) {
+				continue;
+			}
 			$terms[] = array( 'name' =>  $term->name, 'url' => get_category_link( $term->term_id) , 'slug' => $term->slug );
 		}
 	}
-	
+
 	return $terms;
 
 }
 
 /**
  * monthly_timeline_filter function.
- * 
+ *
  * @access public
  * @param mixed $taxonomy
  * @return void
  */
-function flask_shortcode_taxonomy_filter( $taxonomy ) { 
-	
+function flask_shortcode_taxonomy_filter( $taxonomy ) {
+
 	$taxonomies = array(  $taxonomy );
 
 	$args = array(
-	    'orderby'       => 'name', 
+	    'orderby'       => 'name',
 	    'order'         => 'ASC',
-	    'hide_empty'    => true, 
-	    'fields'        => 'all', 
-	    'hierarchical'  => false, 
+	    'hide_empty'    => true,
+	    'fields'        => 'all',
+	    'hierarchical'  => false,
 	);
 	$terms = get_terms( $taxonomies, $args );
-	if( is_array($terms)): 
+	if( is_array($terms)):
 	foreach( $terms as $term ):
-		
+
 		?><li><a href="#<?php echo $taxonomy.'-'.$term->slug; ?>" data-taxonomy="<?php echo esc_attr($taxonomy); ?>" data-slug="<?php echo esc_attr($term->slug); ?>"><?php echo $term->name; ?></a></li><?php
-		
+
 	endforeach;
 	endif;
 }
