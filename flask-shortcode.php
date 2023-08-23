@@ -482,7 +482,7 @@ function flask_hero_img($json_data, $number, $position = 'left', $size = 'small'
  * @param mixed $num
  * @param mixed $taxonomy
  * @param mixed $taxonomy_is
- * @return void
+ * @return array
  */
 function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $taxonomy_1, $taxonomy_2_1, $taxonomy_2_2 ) {
 
@@ -591,7 +591,7 @@ function flask_shortcode_json_output( $query, $num, $taxonomy, $taxonomy_is, $ta
  * @access public
  * @param mixed $post_id
  * @param mixed $taxonomy
- * @return void
+ * @return voarrayid
  */
 function flask_shortcode_get_terms( $post_id, $taxonomy ){
 
